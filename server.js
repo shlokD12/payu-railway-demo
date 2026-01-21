@@ -4,17 +4,18 @@ import crypto from "crypto";
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 
-const PAYU_KEY = process.env.PAYU_KEY;
-const PAYU_SALT = process.env.PAYU_SALT;
+// Loaded from Railway environment variables
+const PAYU_KEY = process.env.PAYU_KEY;     // VXtKZn
+const PAYU_SALT = process.env.PAYU_SALT;   // hW2KELagKTIybzGRLdRoIz8HztG1prDT
 
-// PayU TEST URL (safe for demo)
+// PayU TEST endpoint
 const PAYU_URL = "https://test.payu.in/_payment";
 
 app.get("/pay", (req, res) => {
   const { amount, firstname, email } = req.query;
 
   if (!amount || !firstname || !email) {
-    return res.send("Missing parameters");
+    return res.status(400).send("Missing parameters");
   }
 
   const txnid = "TXN" + Date.now();
@@ -23,9 +24,14 @@ app.get("/pay", (req, res) => {
   const surl = "https://www.bkcashmanagement.com/payment-success";
   const furl = "https://www.bkcashmanagement.com/payment-failed";
 
+  /**
+   * PayU HASH FORMAT (STRICT)
+   * sha512(key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5||||||SALT)
+   * -> exactly 9 pipes after email before SALT
+   */
   const hashString =
     `${PAYU_KEY}|${txnid}|${amount}|${productinfo}|${firstname}|${email}` +
-    `|||||||||||${PAYU_SALT}`;
+    `|||||||||${PAYU_SALT}`;
 
   const hash = crypto
     .createHash("sha512")
@@ -52,5 +58,5 @@ app.get("/pay", (req, res) => {
 });
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log("PayU demo server running");
+  console.log("PayU Railway demo server running");
 });
