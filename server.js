@@ -4,11 +4,9 @@ import crypto from "crypto";
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 
-// Loaded from Railway environment variables
-const PAYU_KEY = process.env.PAYU_KEY;     // VXtKZn
-const PAYU_SALT = process.env.PAYU_SALT;   // hW2KELagKTIybzGRLdRoIz8HztG1prDT
+const PAYU_KEY = process.env.PAYU_KEY;   // VXtKZn
+const PAYU_SALT = process.env.PAYU_SALT; // hW2KELagKTIybzGRLdRoIz8HztG1prDT
 
-// PayU TEST endpoint
 const PAYU_URL = "https://test.payu.in/_payment";
 
 app.get("/pay", (req, res) => {
@@ -24,14 +22,10 @@ app.get("/pay", (req, res) => {
   const surl = "https://www.bkcashmanagement.com/payment-success";
   const furl = "https://www.bkcashmanagement.com/payment-failed";
 
-  /**
-   * PayU HASH FORMAT (STRICT)
-   * sha512(key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5||||||SALT)
-   * -> exactly 9 pipes after email before SALT
-   */
+  // 🔴 PAYU-CORRECT HASH (11 pipes after email)
   const hashString =
     `${PAYU_KEY}|${txnid}|${amount}|${productinfo}|${firstname}|${email}` +
-    `|||||||||${PAYU_SALT}`;
+    `|||||||||||${PAYU_SALT}`;
 
   const hash = crypto
     .createHash("sha512")
