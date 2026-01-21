@@ -1,5 +1,5 @@
 {
-  "name": "payu-demo",
+  "name": "payu-railway-demo",
   "version": "1.0.0",
   "type": "module",
   "main": "server.js",
