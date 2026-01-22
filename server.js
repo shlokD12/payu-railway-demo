@@ -3,6 +3,7 @@ import crypto from "crypto";
 import rateLimit from "express-rate-limit";
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(express.urlencoded({ extended: true }));
 
 const PAYU_KEY = process.env.PAYU_KEY;   // VXtKZn
