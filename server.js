@@ -7,7 +7,7 @@ app.use(express.urlencoded({ extended: true }));
 const PAYU_KEY = process.env.PAYU_KEY;   // VXtKZn
 const PAYU_SALT = process.env.PAYU_SALT; // hW2KELagKTIybzGRLdRoIz8HztG1prDT
 
-const PAYU_URL = "https://test.payu.in/_payment";
+const PAYU_URL = "https://secure.payu.in/_payment";
 
 app.get("/pay", (req, res) => {
   const { amount, firstname, email } = req.query;
